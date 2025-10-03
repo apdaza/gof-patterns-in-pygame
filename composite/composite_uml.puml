@@ -1,0 +1,42 @@
+@startuml composite
+title Composite Pattern (Graphic / Group / Square)
+
+interface Graphic {
+  +move(dx: int, dy: int)
+  +draw(surface: pygame.Surface)
+  +add(child: Graphic)
+  +remove(child: Graphic)
+  +update(dt: float, moving: bool, dirx: float, diry: float)
+}
+
+class Group implements Graphic {
+  -children: List<Graphic>
+  +move(dx: int, dy: int)
+  +draw(surface: pygame.Surface)
+  +add(child: Graphic)
+  +remove(child: Graphic)
+  +update(dt: float, moving: bool, dirx: float, diry: float)
+}
+
+class Square implements Graphic {
+  -x: float
+  -y: float
+  -size: int
+  -base_color: (int,int,int)
+  -squash: float
+  -trail_t: float
+  -jitter_phase: float
+  -_dirx: float
+  -_diry: float
+  +move(dx: int, dy: int)
+  +draw(surface: pygame.Surface)
+  +update(dt: float, moving: bool, dirx: float, diry: float)
+  +add(child: Graphic) <<not supported>>
+  +remove(child: Graphic) <<not supported>>
+}
+
+Graphic <|.. Group
+Graphic <|.. Square
+Group "1" o-- "*" Graphic : children
+
+@enduml
