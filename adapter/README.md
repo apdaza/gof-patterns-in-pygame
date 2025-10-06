@@ -140,24 +140,39 @@ classDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    participant GameLoop as 🎮 Game Loop (main)
-    participant Adapter as 🔌 InputAdapter (Keyboard / Mouse)
-    participant Command as 🧩 Command Object
+    participant Player as 👤 Player (User)
+    participant GameLoop as 🎮 Game Loop
+    participant KeyboardAdapter as ⌨️ KeyboardAdapter
+    participant MouseAdapter as 🖱️ MouseAdapter
+    participant Command as 🧩 Command
     participant Character as 🧍 Character (Adaptee)
 
-    GameLoop->>Adapter: poll(character_rect)
-    note right of Adapter: Reads keyboard or mouse input<br/>and translates to a Command
-    Adapter-->>Command: create Command(move, jump, dash)
-    Adapter-->>GameLoop: return Command
-    
-    GameLoop->>Character: apply(Command, dt)
-    note right of Character: Interprets Command<br/>and updates position, velocity, jump, dash
-    
-    Character->>Character: update physics (gravity, collision)
-    Character-->>GameLoop: new state (x, y, vx, vy)
-    
-    GameLoop->>Character: draw(surface)
-    Character-->>GameLoop: rendered character
+    %% Normal game cycle using KeyboardAdapter
+    loop Each Frame
+        GameLoop->>KeyboardAdapter: poll(character_rect)
+        note right of KeyboardAdapter: Reads key states (A/D/Space/Shift)
+        KeyboardAdapter-->>Command: create Command(move, jump, dash)
+        KeyboardAdapter-->>GameLoop: return Command
+        GameLoop->>Character: apply(Command, dt)
+        Character->>Character: update physics and position
+        GameLoop->>Character: draw(surface)
+    end
+
+    %% User switches control mode
+    Player->>GameLoop: press TAB
+    note right of GameLoop: Active adapter toggled to MouseAdapter
+
+    %% Game resumes with MouseAdapter
+    loop Each Frame
+        GameLoop->>MouseAdapter: poll(character_rect)
+        note right of MouseAdapter: Reads cursor position and mouse buttons
+        MouseAdapter-->>Command: create Command(move, jump, dash)
+        MouseAdapter-->>GameLoop: return Command
+        GameLoop->>Character: apply(Command, dt)
+        Character->>Character: update physics and position
+        GameLoop->>Character: draw(surface)
+    end
+
 ```
 
 ---
