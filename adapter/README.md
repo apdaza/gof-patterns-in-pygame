@@ -97,6 +97,7 @@ player.apply(cmd, dt)
 ---
 
 ## 🧭 UML Diagram (Mermaid)
+### Class Diagram
 
 ```mermaid
 classDiagram
@@ -134,6 +135,29 @@ classDiagram
     Character --> Command
     InputAdapter <|.. KeyboardAdapter
     InputAdapter <|.. MouseAdapter
+```
+### Sequence Diagram
+```mermaid
+sequenceDiagram
+    autonumber
+    participant GameLoop as 🎮 Game Loop (main)
+    participant Adapter as 🔌 InputAdapter (Keyboard / Mouse)
+    participant Command as 🧩 Command Object
+    participant Character as 🧍 Character (Adaptee)
+
+    GameLoop->>Adapter: poll(character_rect)
+    note right of Adapter: Reads keyboard or mouse input<br/>and translates to a Command
+    Adapter-->>Command: create Command(move, jump, dash)
+    Adapter-->>GameLoop: return Command
+    
+    GameLoop->>Character: apply(Command, dt)
+    note right of Character: Interprets Command<br/>and updates position, velocity, jump, dash
+    
+    Character->>Character: update physics (gravity, collision)
+    Character-->>GameLoop: new state (x, y, vx, vy)
+    
+    GameLoop->>Character: draw(surface)
+    Character-->>GameLoop: rendered character
 ```
 
 ---
