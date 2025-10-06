@@ -1,0 +1,64 @@
+@startuml
+title Decorator Pattern for Pygame Runner
+
+skinparam classAttributeIconSize 0
+
+interface ICharacter {
+  +update(dt, keys)
+  +draw(surface)
+  +get_rect()
+  +get_base_speed()
+  +get_move_speed()
+  +get_jump_power()
+  +is_shielded()
+  +damage(amount)
+  +get_state()
+}
+
+class SimpleCharacter {
+  -_base_speed
+  -_jump_power
+  -x
+  -y
+  -vx
+  -vy
+  -on_ground
+  +update(dt, keys)
+  +draw(surface)
+  +get_move_speed()
+  +get_jump_power()
+  +is_shielded()
+  +damage(amount)
+  +get_state()
+}
+
+class CharacterDecorator {
+  -wrappee : ICharacter
+  +update(dt, keys)
+  +draw(surface)
+  +get_rect()
+  +get_base_speed()
+  +get_move_speed()
+  +get_jump_power()
+  +is_shielded()
+  +damage(amount)
+  +get_state()
+}
+
+class TimedDecorator {
+  -remaining
+  +update(dt, keys)
+  +is_expired()
+}
+
+class SpeedBoost
+class JumpBoost
+class Shield
+
+ICharacter <|.. SimpleCharacter
+ICharacter <|.. CharacterDecorator
+CharacterDecorator <|-- TimedDecorator
+TimedDecorator <|-- SpeedBoost
+TimedDecorator <|-- JumpBoost
+TimedDecorator <|-- Shield
+@enduml
